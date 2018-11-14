@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Артём Полунин](https://up.htmlacademy.ru/javascript/16/user/274677).
-* Наставник: `Неизвестно`.
+* Наставник: [Роман Мисюрин](https://htmlacademy.ru/profile/lunaticus).
 
 ---
 
