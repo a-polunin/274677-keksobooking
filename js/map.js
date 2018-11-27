@@ -180,10 +180,12 @@ var createNode = function (template) {
 
 var fillPinWithData = function (pin, data) {
   var pinStyles = getComputedStyle(pin);
+  var pinWidth = +pinStyles.width.slice(0, pinStyles.width.length - 2);
+  var pinHeight = +pinStyles.width.slice(0, pinStyles.height.length - 2);
   var pinImage = pin.querySelector('img');
 
-  pin.style.left = data.location.x + (pinStyles.width / 2) + 'px';
-  pin.style.top = data.location.y + pinStyles.height + 'px';
+  pin.style.left = data.location.x + (pinWidth / 2) + 'px';
+  pin.style.top = data.location.y + pinHeight + 'px';
   pinImage.src = data.author.avatar;
   pinImage.alt = data.offer.title;
 
