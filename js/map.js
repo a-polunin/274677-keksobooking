@@ -55,11 +55,11 @@ var createAdArray = function (num) {
   var array = [];
   for (var i = 0; i < num; i++) {
     array.push(createAdObject(
-      PULL_OF_TYPES,
-      PULL_OF_CHECKINS,
-      PULL_OF_CHECKOUTS,
-      PULL_OF_FEATURES,
-      PULL_OF_PHOTOS));
+        PULL_OF_TYPES,
+        PULL_OF_CHECKINS,
+        PULL_OF_CHECKOUTS,
+        PULL_OF_FEATURES,
+        PULL_OF_PHOTOS));
   }
 
   return array;
@@ -196,13 +196,8 @@ var fillPinWithData = function (pin, data) {
 // Создаю карты
 var createCards = function (data) {
   var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
-  var map = document.querySelector('.map');
-  var mapFilterContainer = document.querySelector('.map__filters-container');
 
-  // var firstCard = [data[0]];
-  // var cards = fillTemplateWithData(cardTemplate, data, fillCardWithData);
   return fillTemplateWithData(cardTemplate, data, fillCardWithData);
-  // renderBefore(map, mapFilterContainer, cards);
 };
 
 var fillCardWithData = function (card, data) {
@@ -376,10 +371,11 @@ mapOfPins.addEventListener('click', function (e) {
     var renderedCard = document.querySelector('.map__card');
     renderedCard.addEventListener('click', function (evt) {
       closeCard(evt, renderedCard);
-    })
+    });
+
     renderedCard.addEventListener('keyup', function (evt) {
       closeCardESC(evt, renderedCard);
-    })
+    });
   }
 });
 
