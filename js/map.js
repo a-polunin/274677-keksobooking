@@ -48,6 +48,9 @@ var PULL_OF_PHOTOS = [
 
 var NUMBER_OF_OBJECTS = 8;
 var ESC_KEYCODE = 27;
+var MAIN_PIN_WIDTH = 65;
+var MAIN_PIN_HEIGHT = 87; // 65 + 22, где 65 высота метки, а 22 это высота острия
+
 var avatarCounterArray = createArrayOfNumbers(NUMBER_OF_OBJECTS);
 
 // Создаю массив объектов
@@ -326,12 +329,10 @@ var setAddress = function (defaultAddress) {
   var mainPinStyle = getComputedStyle(mainPin);
   var mainPinLeft = +mainPinStyle.left.slice(0, mainPinStyle.left.length - 2);
   var mainPinTop = +mainPinStyle.top.slice(0, mainPinStyle.top.length - 2);
-  var mainPinWidth = +mainPinStyle.width.slice(0, mainPinStyle.width.length - 2);
-  var mainPinHeight = +mainPinStyle.height.slice(0, mainPinStyle.height.length - 2);
 
   adressInput.value = defaultAddress ?
-    (mainPinLeft + (mainPinWidth / 2)) + ', ' + (mainPinTop + (mainPinHeight / 2)) :
-    adressInput.value = (mainPinLeft + (mainPinWidth / 2)) + ', ' + (mainPinTop + (mainPinHeight));
+    (mainPinLeft + (MAIN_PIN_WIDTH / 2)) + ', ' + (mainPinTop + (MAIN_PIN_HEIGHT / 2)) :
+    (mainPinLeft + (MAIN_PIN_WIDTH / 2)) + ', ' + (mainPinTop + (MAIN_PIN_HEIGHT));
 };
 
 var data = createAdArray(NUMBER_OF_OBJECTS);
@@ -345,17 +346,12 @@ mainPin.addEventListener('mouseup', function () {
   createPins(data);
 });
 
-var closeCard = function (e, renderedCard) {
-  var map = document.querySelector('.map');
-  if (e.target.classList.contains('popup__close')) {
-    map.removeChild(renderedCard);
-  }
-};
 
-var closeCardESC = function (e, renderedCard) {
+var closeCard = function () {
   var map = document.querySelector('.map');
-  if (e.keyCode === ESC_KEYCODE) {
-    map.removeChild(renderedCard);
+  var openedCard = document.querySelector('.map__card');
+  if (openedCard) {
+    map.removeChild(openedCard);
   }
 };
 
@@ -365,17 +361,21 @@ mapOfPins.addEventListener('click', function (e) {
   var target = e.target.closest('.map__pin');
 
   if (target && target !== mainPin) {
+    closeCard();
+
     var pinClassName = +target.className.split('--')[1];
     renderBefore(map, mapFilterContainer, cards.children[pinClassName]);
 
-    var renderedCard = document.querySelector('.map__card');
-    renderedCard.addEventListener('click', function (evt) {
-      closeCard(evt, renderedCard);
+    var closeCardBtn = document.querySelector('.map__card .popup__close');
+    closeCardBtn.addEventListener('click', function () {
+      closeCard();
     });
+  }
+});
 
-    renderedCard.addEventListener('keyup', function (evt) {
-      closeCardESC(evt, renderedCard);
-    });
+document.addEventListener('keyup', function (e) {
+  if (e.keyCode === ESC_KEYCODE) {
+    closeCard();
   }
 });
 
