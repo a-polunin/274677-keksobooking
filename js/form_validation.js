@@ -1,5 +1,4 @@
 'use strict';
-document.querySelector('.ad-form').classList.remove('ad-form--disabled');
 var houseType = document.querySelector('#type');
 var timeIn = document.querySelector('#timein');
 var timeOut = document.querySelector('#timeout');
@@ -36,25 +35,22 @@ timeOut.addEventListener('change', function () {
   timeIn.selectedIndex = timeOut.selectedIndex;
 });
 
-roomNumber.addEventListener('change', function () {
-  var selectedRoomNumber = roomNumber.options[roomNumber.selectedIndex].value;
-  enableCapacityOptions(+selectedRoomNumber);
-});
-
-var enableCapacityOptions = function (num) {
+var enableCapacityOptions = function () {
+  var selectedRoomNumber = +roomNumber.options[roomNumber.selectedIndex].value;
   var capacity = document.querySelector('#capacity');
   for (var i = 0; i < capacity.options.length; i++) {
     capacity.options[i].disabled = true;
   }
 
-  if (num !== 100) {
+  if (selectedRoomNumber !== 100) {
     capacity.selectedIndex = 0;
-    for (var k = 0; k < num; k++) {
+    for (var k = 0; k < selectedRoomNumber; k++) {
       capacity.options[k].disabled = false;
     }
   } else {
     capacity.options[3].disabled = false;
     capacity.selectedIndex = 3;
   }
-
 };
+
+roomNumber.addEventListener('change', enableCapacityOptions);
