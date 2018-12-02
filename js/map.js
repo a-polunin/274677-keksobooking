@@ -47,10 +47,11 @@ var PULL_OF_PHOTOS = [
 ];
 
 var NUMBER_OF_OBJECTS = 8;
+var ESC_KEYCODE = 27;
+var MAIN_PIN_WIDTH = 65;
+var MAIN_PIN_HEIGHT = 87; // 65 + 22, где 65 высота метки, а 22 это высота острия
 
 var avatarCounterArray = createArrayOfNumbers(NUMBER_OF_OBJECTS);
-
-document.querySelector('.map').classList.remove('map--faded');
 
 // Создаю массив объектов
 var createAdArray = function (num) {
@@ -166,9 +167,12 @@ var fillTemplateWithData = function (template, data, func) {
   var fragment = document.createDocumentFragment();
 
   for (var i = 0; i < data.length; i++) {
-    var pinElement = createNode(template);
+    var elem = createNode(template);
+    if (template.classList.contains('map__pin')) {
+      elem.classList.add('map__pin--' + i);
+    }
 
-    fragment.appendChild(func(pinElement, data[i]));
+    fragment.appendChild(func(elem, data[i]));
   }
 
   return fragment;
@@ -195,12 +199,8 @@ var fillPinWithData = function (pin, data) {
 // Создаю карты
 var createCards = function (data) {
   var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
-  var map = document.querySelector('.map');
-  var mapFilterContainer = document.querySelector('.map__filters-container');
 
-  var firstCard = [data[0]];
-  var cards = fillTemplateWithData(cardTemplate, firstCard, fillCardWithData);
-  renderBefore(map, mapFilterContainer, cards);
+  return fillTemplateWithData(cardTemplate, data, fillCardWithData);
 };
 
 var fillCardWithData = function (card, data) {
@@ -301,9 +301,82 @@ var render = function (parentElement, childElement) {
 };
 
 var renderBefore = function (parentElement, beforeElement, childElement) {
-  parentElement.insertBefore(childElement, beforeElement);
+  if (childElement) {
+    var childClone = createNode(childElement);
+    parentElement.insertBefore(childClone, beforeElement);
+  }
+};
+
+var activatePage = function () {
+  document.querySelector('.map').classList.remove('map--faded');
+
+  var adForm = document.querySelector('.ad-form');
+  var adFormFieldsets = adForm.querySelectorAll('fieldset');
+  var mapFiltersDisabledElements = document.querySelectorAll('.map__filters *:disabled');
+
+  adFormFieldsets.forEach(function (item) {
+    item.disabled = false;
+  });
+  adForm.classList.remove('ad-form--disabled');
+
+  mapFiltersDisabledElements.forEach(function (item) {
+    item.disabled = false;
+  });
+};
+
+var setAddress = function (defaultAddress) {
+  var adressInput = document.querySelector('#address');
+  var mainPinStyle = getComputedStyle(mainPin);
+  var mainPinLeft = +mainPinStyle.left.slice(0, mainPinStyle.left.length - 2);
+  var mainPinTop = +mainPinStyle.top.slice(0, mainPinStyle.top.length - 2);
+
+  adressInput.value = defaultAddress ?
+    (mainPinLeft + (MAIN_PIN_WIDTH / 2)) + ', ' + (mainPinTop + (MAIN_PIN_HEIGHT / 2)) :
+    (mainPinLeft + (MAIN_PIN_WIDTH / 2)) + ', ' + (mainPinTop + (MAIN_PIN_HEIGHT));
 };
 
 var data = createAdArray(NUMBER_OF_OBJECTS);
-createPins(data);
-createCards(data);
+var cards = createCards(data);
+var mainPin = document.querySelector('.map__pin--main');
+var mapOfPins = document.querySelector('.map__pins');
+
+mainPin.addEventListener('mouseup', function () {
+  activatePage();
+  setAddress(false);
+  createPins(data);
+});
+
+
+var closeCard = function () {
+  var map = document.querySelector('.map');
+  var openedCard = document.querySelector('.map__card');
+  if (openedCard) {
+    map.removeChild(openedCard);
+  }
+};
+
+mapOfPins.addEventListener('click', function (e) {
+  var map = document.querySelector('.map');
+  var mapFilterContainer = document.querySelector('.map__filters-container');
+  var target = e.target.closest('.map__pin');
+
+  if (target && target !== mainPin) {
+    closeCard();
+
+    var pinClassName = +target.className.split('--')[1];
+    renderBefore(map, mapFilterContainer, cards.children[pinClassName]);
+
+    var closeCardBtn = document.querySelector('.map__card .popup__close');
+    closeCardBtn.addEventListener('click', function () {
+      closeCard();
+    });
+  }
+});
+
+document.addEventListener('keyup', function (e) {
+  if (e.keyCode === ESC_KEYCODE) {
+    closeCard();
+  }
+});
+
+setAddress(true);
