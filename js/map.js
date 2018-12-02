@@ -340,13 +340,6 @@ var cards = createCards(data);
 var mainPin = document.querySelector('.map__pin--main');
 var mapOfPins = document.querySelector('.map__pins');
 
-mainPin.addEventListener('mouseup', function () {
-  activatePage();
-  setAddress(false);
-  createPins(data);
-});
-
-
 var closeCard = function () {
   var map = document.querySelector('.map');
   var openedCard = document.querySelector('.map__card');
@@ -354,6 +347,65 @@ var closeCard = function () {
     map.removeChild(openedCard);
   }
 };
+
+mainPin.addEventListener('mousedown', function (e) {
+  e.preventDefault();
+  var startCoords = {
+    x: e.clientX,
+    y: e.clientY
+  };
+
+  var onMouseMove = function (moveE) {
+    moveE.preventDefault();
+
+    var MAX_LEFT = 1135; // 1200 - 65, где 1200 ширина карты, а 65 ширина метки
+    var MIN_LEFT = 0;
+    var MIN_TOP = 130;
+    var MAX_TOP = 640;
+
+    activatePage();
+    setAddress(false);
+    createPins(data);
+
+    var shift = {
+      x: startCoords.x - moveE.clientX,
+      y: startCoords.y - moveE.clientY
+    };
+
+    startCoords = {
+      x: moveE.clientX,
+      y: moveE.clientY
+    };
+
+    if ((mainPin.offsetTop - shift.y) < MIN_TOP) {
+      mainPin.style.top = MIN_TOP + 'px';
+    } else if ((mainPin.offsetTop - shift.y) > MAX_TOP) {
+      mainPin.style.top = MAX_TOP + 'px';
+    } else {
+      mainPin.style.top = (mainPin.offsetTop - shift.y) + 'px';
+    }
+
+    if ((mainPin.offsetLeft - shift.x) < MIN_LEFT) {
+      mainPin.style.left = MIN_LEFT + 'px';
+    } else if ((mainPin.offsetLeft - shift.x) > MAX_LEFT) {
+      mainPin.style.left = MAX_LEFT + 'px';
+    } else {
+      mainPin.style.left = (mainPin.offsetLeft - shift.x) + 'px';
+    }
+
+  };
+
+  var onMouseUp = function (upE) {
+    upE.preventDefault();
+
+    setAddress(false);
+
+    document.removeEventListener('mousemove', onMouseMove);
+    document.removeEventListener('mouseup', onMouseUp);
+  };
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
+});
 
 mapOfPins.addEventListener('click', function (e) {
   var map = document.querySelector('.map');
