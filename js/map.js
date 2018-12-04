@@ -355,8 +355,8 @@ mainPin.addEventListener('mousedown', function (e) {
     y: e.clientY
   };
 
-  var onMouseMove = function (moveE) {
-    moveE.preventDefault();
+  var onMouseMove = function (moveEvent) {
+    moveEvent.preventDefault();
 
     var MAX_LEFT = 1135; // 1200 - 65, где 1200 ширина карты, а 65 ширина метки
     var MIN_LEFT = 0;
@@ -368,13 +368,13 @@ mainPin.addEventListener('mousedown', function (e) {
     createPins(data);
 
     var shift = {
-      x: startCoords.x - moveE.clientX,
-      y: startCoords.y - moveE.clientY
+      x: startCoords.x - moveEvent.clientX,
+      y: startCoords.y - moveEvent.clientY
     };
 
     startCoords = {
-      x: moveE.clientX,
-      y: moveE.clientY
+      x: moveEvent.clientX,
+      y: moveEvent.clientY
     };
 
     if ((mainPin.offsetTop - shift.y) < MIN_TOP) {
@@ -395,8 +395,8 @@ mainPin.addEventListener('mousedown', function (e) {
 
   };
 
-  var onMouseUp = function (upE) {
-    upE.preventDefault();
+  var onMouseUp = function (upEvent) {
+    upEvent.preventDefault();
 
     setAddress(false);
 
