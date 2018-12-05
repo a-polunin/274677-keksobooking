@@ -331,8 +331,8 @@ var setAddress = function (defaultAddress) {
   var mainPinTop = +mainPinStyle.top.slice(0, mainPinStyle.top.length - 2);
 
   adressInput.value = defaultAddress ?
-    (mainPinLeft + (MAIN_PIN_WIDTH / 2)) + ', ' + (mainPinTop + (MAIN_PIN_HEIGHT / 2)) :
-    (mainPinLeft + (MAIN_PIN_WIDTH / 2)) + ', ' + (mainPinTop + (MAIN_PIN_HEIGHT));
+    Math.floor((mainPinLeft + (MAIN_PIN_WIDTH / 2))) + ', ' + Math.floor((mainPinTop + (MAIN_PIN_HEIGHT / 2))) :
+    Math.floor((mainPinLeft + (MAIN_PIN_WIDTH / 2))) + ', ' + (mainPinTop + (MAIN_PIN_HEIGHT));
 };
 
 var data = createAdArray(NUMBER_OF_OBJECTS);
@@ -360,8 +360,8 @@ mainPin.addEventListener('mousedown', function (e) {
 
     var MAX_LEFT = 1135; // 1200 - 65, где 1200 ширина карты, а 65 ширина метки
     var MIN_LEFT = 0;
-    var MIN_TOP = 130;
-    var MAX_TOP = 640;
+    var MIN_TOP = 43;
+    var MAX_TOP = 553;
 
     activatePage();
     setAddress(false);
@@ -390,7 +390,7 @@ mainPin.addEventListener('mousedown', function (e) {
     } else if ((mainPin.offsetLeft - shift.x) > MAX_LEFT) {
       mainPin.style.left = MAX_LEFT + 'px';
     } else {
-      mainPin.style.left = (mainPin.offsetLeft - shift.x) + 'px';
+      mainPin.style.left = Math.floor((mainPin.offsetLeft - shift.x)) + 'px';
     }
 
   };
