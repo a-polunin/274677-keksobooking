@@ -1,12 +1,6 @@
 'use strict';
 (function () {
-  var createPins = function (data) {
-    var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
-    var mapOfPins = document.querySelector('.map__pins');
-
-    var pins = window.util.fillTemplateWithData(pinTemplate, data, fillPinWithData);
-    window.util.render(mapOfPins, pins);
-  };
+  var util = window.util;
 
   var fillPinWithData = function (pin, data) {
     var pinStyles = getComputedStyle(pin);
@@ -22,7 +16,11 @@
     return pin;
   };
 
-  window.pin = function () {
-    return createPins(window.createData.data);
+  window.createPins = function (data) {
+    var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
+    var mapOfPins = document.querySelector('.map__pins');
+
+    var pins = util.fillTemplateWithData(pinTemplate, data, fillPinWithData);
+    util.render(mapOfPins, pins);
   };
 })();

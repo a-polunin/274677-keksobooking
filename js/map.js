@@ -1,5 +1,10 @@
 'use strict';
 (function () {
+  var util = window.util;
+  var constants = window.constants;
+  var data = window.data;
+  var createPins = window.createPins;
+  var createCards = window.createCards;
 
   var activatePage = function () {
     document.querySelector('.map').classList.remove('map--faded');
@@ -24,17 +29,17 @@
     var mainPinLeft = +mainPinStyle.left.slice(0, mainPinStyle.left.length - 2);
     var mainPinTop = +mainPinStyle.top.slice(0, mainPinStyle.top.length - 2);
 
-    var defaultLeft = Math.floor((mainPinLeft + (window.constants.MAIN_PIN_WIDTH / 2)));
-    var defaultTop = Math.floor((mainPinTop + (window.constants.MAIN_PIN_HEIGHT / 2)));
-    var left = Math.floor((mainPinLeft + (window.constants.MAIN_PIN_WIDTH / 2)));
-    var top = (mainPinTop + (window.constants.MAIN_PIN_HEIGHT));
+    var defaultLeft = Math.floor((mainPinLeft + (constants.MAIN_PIN_WIDTH / 2)));
+    var defaultTop = Math.floor((mainPinTop + (constants.MAIN_PIN_HEIGHT / 2)));
+    var left = Math.floor((mainPinLeft + (constants.MAIN_PIN_WIDTH / 2)));
+    var top = (mainPinTop + (constants.MAIN_PIN_HEIGHT));
 
     adressInput.value = defaultAddress ?
       defaultLeft + ', ' + defaultTop :
       left + ', ' + top;
   };
 
-  var cards = window.card();
+  var cards = createCards(data);
   var mainPin = document.querySelector('.map__pin--main');
   var mapOfPins = document.querySelector('.map__pins');
 
@@ -44,6 +49,11 @@
     if (openedCard) {
       map.removeChild(openedCard);
     }
+    document.removeEventListener('keyup', onCardEscPress);
+  };
+
+  var onCardEscPress = function (e) {
+    util.isEscEvent(e, closeCard);
   };
 
   mainPin.addEventListener('mousedown', function (e) {
@@ -63,7 +73,7 @@
 
       activatePage();
       setAddress(false);
-      window.pin();
+      createPins(data);
 
       var shift = {
         x: startCoords.x - moveEvent.clientX,
@@ -114,18 +124,13 @@
       closeCard();
 
       var pinClassName = +target.className.split('--')[1];
-      window.util.renderBefore(map, mapFilterContainer, cards.children[pinClassName]);
+      util.renderBefore(map, mapFilterContainer, cards.children[pinClassName]);
+      document.addEventListener('keyup', onCardEscPress);
 
       var closeCardBtn = document.querySelector('.map__card .popup__close');
       closeCardBtn.addEventListener('click', function () {
         closeCard();
       });
-    }
-  });
-
-  document.addEventListener('keyup', function (e) {
-    if (e.keyCode === window.constants.ESC_KEYCODE) {
-      closeCard();
     }
   });
 

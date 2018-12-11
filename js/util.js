@@ -1,5 +1,7 @@
 'use strict';
 (function () {
+  var constants = window.constants;
+
   window.util = {
     createArrayOfNumbers: function (num) {
       var array = [];
@@ -70,6 +72,11 @@
         fragment.appendChild(func(elem, data[i]));
       }
       return fragment;
+    },
+    isEscEvent: function (e, action) {
+      if (e.keyCode === constants.ESC_KEYCODE) {
+        action();
+      }
     },
   };
 })();
