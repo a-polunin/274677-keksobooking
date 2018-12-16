@@ -1,9 +1,13 @@
 'use strict';
 (function () {
+  var util = window.util;
   var houseType = document.querySelector('#type');
   var timeIn = document.querySelector('#timein');
   var timeOut = document.querySelector('#timeout');
   var roomNumber = document.querySelector('#room_number');
+  var adForm = document.querySelector('.ad-form');
+  var adFormReset = document.querySelector('.ad-form__reset');
+
 
   houseType.addEventListener('change', function () {
     var selectedHouseType = houseType.options[houseType.selectedIndex].value;
@@ -55,4 +59,11 @@
   };
 
   roomNumber.addEventListener('change', enableCapacityOptions);
+
+  adForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+    window.backend.save(new FormData(adForm), util.deactivatePage, util.createErrorAlert);
+  });
+
+  adFormReset.addEventListener('click', util.deactivatePage);
 })();

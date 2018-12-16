@@ -90,6 +90,6 @@
 
   window.createCards = function (data) {
     var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
-    return util.fillTemplateWithData(cardTemplate, data, fillCardWithData);
+    window.map.cards = util.fillTemplateWithData(cardTemplate, data, fillCardWithData);
   };
 })();
