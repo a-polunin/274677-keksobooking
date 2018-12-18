@@ -1,60 +1,10 @@
 'use strict';
 (function () {
   var util = window.util;
-  var constants = window.constants;
-  var data = window.data;
-  var createPins = window.createPins;
-  var createCards = window.createCards;
+  var backend = window.backend;
 
-  var activatePage = function () {
-    document.querySelector('.map').classList.remove('map--faded');
-
-    var adForm = document.querySelector('.ad-form');
-    var adFormFieldsets = adForm.querySelectorAll('fieldset');
-    var mapFiltersDisabledElements = document.querySelectorAll('.map__filters *:disabled');
-
-    adFormFieldsets.forEach(function (item) {
-      item.disabled = false;
-    });
-    adForm.classList.remove('ad-form--disabled');
-
-    mapFiltersDisabledElements.forEach(function (item) {
-      item.disabled = false;
-    });
-  };
-
-  var setAddress = function (defaultAddress) {
-    var adressInput = document.querySelector('#address');
-    var mainPinStyle = getComputedStyle(mainPin);
-    var mainPinLeft = +mainPinStyle.left.slice(0, mainPinStyle.left.length - 2);
-    var mainPinTop = +mainPinStyle.top.slice(0, mainPinStyle.top.length - 2);
-
-    var defaultLeft = Math.floor((mainPinLeft + (constants.MAIN_PIN_WIDTH / 2)));
-    var defaultTop = Math.floor((mainPinTop + (constants.MAIN_PIN_HEIGHT / 2)));
-    var left = Math.floor((mainPinLeft + (constants.MAIN_PIN_WIDTH / 2)));
-    var top = (mainPinTop + (constants.MAIN_PIN_HEIGHT));
-
-    adressInput.value = defaultAddress ?
-      defaultLeft + ', ' + defaultTop :
-      left + ', ' + top;
-  };
-
-  var cards = createCards(data);
   var mainPin = document.querySelector('.map__pin--main');
   var mapOfPins = document.querySelector('.map__pins');
-
-  var closeCard = function () {
-    var map = document.querySelector('.map');
-    var openedCard = document.querySelector('.map__card');
-    if (openedCard) {
-      map.removeChild(openedCard);
-    }
-    document.removeEventListener('keyup', onCardEscPress);
-  };
-
-  var onCardEscPress = function (e) {
-    util.isEscEvent(e, closeCard);
-  };
 
   mainPin.addEventListener('mousedown', function (e) {
     e.preventDefault();
@@ -71,9 +21,13 @@
       var MIN_TOP = 43;
       var MAX_TOP = 553;
 
-      activatePage();
-      setAddress(false);
-      createPins(data);
+      if (util.firstTouchFlag) {
+        util.activatePage();
+        util.setAddress(false);
+        backend.load(util.loadCardsAndPins, util.createErrorAlert);
+        util.firstTouchFlag = false;
+      }
+      util.setAddress(false);
 
       var shift = {
         x: startCoords.x - moveEvent.clientX,
@@ -106,7 +60,7 @@
     var onMouseUp = function (upEvent) {
       upEvent.preventDefault();
 
-      setAddress(false);
+      util.setAddress(false);
 
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
@@ -121,18 +75,24 @@
     var target = e.target.closest('.map__pin');
 
     if (target && target !== mainPin) {
-      closeCard();
+      util.closeCard();
 
       var pinClassName = +target.className.split('--')[1];
-      util.renderBefore(map, mapFilterContainer, cards.children[pinClassName]);
-      document.addEventListener('keyup', onCardEscPress);
+      util.renderBefore(map, mapFilterContainer, window.map.cards.children[pinClassName]);
+      target.classList.add('map__pin--active');
+
+      document.addEventListener('keyup', util.onCardEscPress);
 
       var closeCardBtn = document.querySelector('.map__card .popup__close');
       closeCardBtn.addEventListener('click', function () {
-        closeCard();
+        util.closeCard();
       });
     }
   });
 
-  setAddress(true);
+  util.setAddress(true);
+
+  window.map = {
+    cards: '',
+  };
 })();
