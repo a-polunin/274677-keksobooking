@@ -69,7 +69,9 @@
       var filteredData = data.filter(function (el) {
         return el.offer ? true : false;
       });
-      for (var i = 0; i < filteredData.length; i++) {
+
+      var dataCount = filteredData.length > constants.PINS_COUNT ? constants.PINS_COUNT : filteredData.length;
+      for (var i = 0; i < dataCount; i++) {
         var elem = window.util.createNode(template);
         if (template.classList.contains('map__pin')) {
           elem.classList.add('map__pin--' + i);
