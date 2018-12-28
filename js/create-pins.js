@@ -19,7 +19,6 @@
   window.createPins = function (data) {
     var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
     var mapOfPins = document.querySelector('.map__pins');
-
     var pins = util.fillTemplateWithData(pinTemplate, data, fillPinWithData);
     util.render(mapOfPins, pins);
   };
