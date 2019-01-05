@@ -19,7 +19,7 @@
       var MAX_LEFT = 1135; // 1200 - 65, где 1200 ширина карты, а 65 ширина метки
       var MIN_LEFT = 0;
       var MIN_TOP = 43;
-      var MAX_TOP = 553;
+      var MAX_TOP = 543;
 
       if (util.firstTouchFlag) {
         util.activatePage();

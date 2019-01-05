@@ -147,31 +147,31 @@
 
       var adForm = document.querySelector('.ad-form');
       var adFormFieldsets = adForm.querySelectorAll('fieldset');
-      var mapFiltersDisabledElements = document.querySelectorAll('.map__filters *:disabled');
+      var mapFiltersDisabledItems = document.querySelectorAll('.map__filters *:disabled');
 
       adFormFieldsets.forEach(function (item) {
         item.disabled = false;
       });
       adForm.classList.remove('ad-form--disabled');
 
-      mapFiltersDisabledElements.forEach(function (item) {
+      mapFiltersDisabledItems.forEach(function (item) {
         item.disabled = false;
       });
     },
 
-    deactivatePage: function () {
+    deactivatePage: function (e) {
       document.querySelector('.map').classList.add('map--faded');
 
       var adForm = document.querySelector('.ad-form');
       var adFormFieldsets = adForm.querySelectorAll('fieldset');
-      var mapFiltersDisabledElements = document.querySelectorAll('.map__filters *:disabled');
+      var mapFiltersDisabledItems = document.querySelectorAll('.map__filters *:disabled');
 
       adFormFieldsets.forEach(function (item) {
         item.disabled = true;
       });
       adForm.classList.add('ad-form--disabled');
 
-      mapFiltersDisabledElements.forEach(function (item) {
+      mapFiltersDisabledItems.forEach(function (item) {
         item.disabled = true;
       });
 
@@ -180,7 +180,9 @@
       window.util.clearMapOfPins();
       window.util.setAddress(false);
       window.util.closeCard();
-      window.util.createSuccessMessage();
+      if (e.target.type === 'submit') {
+        window.util.createSuccessMessage();
+      }
     },
 
     setAddress: function (defaultAddress) {
