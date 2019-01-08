@@ -2,11 +2,19 @@
 
 (function () {
   var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
-  var avatarFileChooser = document.querySelector('.ad-form__field input[type=file]');
-  var houseFileChooser = document.querySelector('.ad-form__upload input[type=file]');
+  var avatarFileChooser = document.querySelector(
+      '.ad-form__field input[type=file]'
+  );
+  var houseFileChooser = document.querySelector(
+      '.ad-form__upload input[type=file]'
+  );
   var avatarPreview = document.querySelector('.ad-form-header__preview img');
-  var avatarDropZone = document.querySelector('.ad-form__field .ad-form-header__drop-zone');
-  var housePhotosDropZone = document.querySelector('.ad-form__upload .ad-form__drop-zone');
+  var avatarDropZone = document.querySelector(
+      '.ad-form__field .ad-form-header__drop-zone'
+  );
+  var housePhotosDropZone = document.querySelector(
+      '.ad-form__upload .ad-form__drop-zone'
+  );
 
   var loadAvatarImg = function (file, fileName) {
     var matches = FILE_TYPES.some(function (el) {
@@ -29,20 +37,6 @@
     var fileName = file.name.toLowerCase();
 
     loadAvatarImg(file, fileName);
-  };
-
-
-  var preventDefaults = function (e) {
-    e.preventDefault();
-    e.stopPropagation();
-  };
-
-  var highlight = function (e) {
-    e.target.classList.add('highlight');
-  };
-
-  var unhighlight = function (e) {
-    e.target.classList.remove('highlight');
   };
 
   var uploadAvatarWithDrop = function (e) {
@@ -112,6 +106,19 @@
     var files = dt.files;
 
     loadHouseImgs(files);
+  };
+
+  var preventDefaults = function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  var highlight = function (e) {
+    e.target.classList.add('highlight');
+  };
+
+  var unhighlight = function (e) {
+    e.target.classList.remove('highlight');
   };
 
   ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(function (eventName) {
