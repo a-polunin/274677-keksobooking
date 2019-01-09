@@ -1,6 +1,12 @@
 'use strict';
 (function () {
-  var createHttpRequest = function (URL, method, onLoadCallback, onErrorCallback, data) {
+  var createHttpRequest = function (
+      URL,
+      method,
+      onLoadCallback,
+      onErrorCallback,
+      data
+  ) {
     var xhr = new XMLHttpRequest();
     xhr.responseType = 'json';
 

@@ -6,6 +6,43 @@
   var mainPin = document.querySelector('.map__pin--main');
   var mapOfPins = document.querySelector('.map__pins');
 
+  var setMainPinPosition = function (shift) {
+    var MAX_LEFT = 1135;
+    var MIN_LEFT = 0;
+    var MIN_TOP = 43;
+    var MAX_TOP = 543;
+
+    if (mainPin.offsetTop - shift.y < MIN_TOP) {
+      mainPin.style.top = MIN_TOP + 'px';
+    } else if (mainPin.offsetTop - shift.y > MAX_TOP) {
+      mainPin.style.top = MAX_TOP + 'px';
+    } else {
+      mainPin.style.top = mainPin.offsetTop - shift.y + 'px';
+    }
+
+    if (mainPin.offsetLeft - shift.x < MIN_LEFT) {
+      mainPin.style.left = MIN_LEFT + 'px';
+    } else if (mainPin.offsetLeft - shift.x > MAX_LEFT) {
+      mainPin.style.left = MAX_LEFT + 'px';
+    } else {
+      mainPin.style.left = Math.floor(mainPin.offsetLeft - shift.x) + 'px';
+    }
+  };
+
+  var calculateShift = function (startCoords, moveEvent) {
+    return {
+      x: startCoords.x - moveEvent.clientX,
+      y: startCoords.y - moveEvent.clientY
+    };
+  };
+
+  var updateStartCoords = function (moveEvent) {
+    return {
+      x: moveEvent.clientX,
+      y: moveEvent.clientY
+    };
+  };
+
   mainPin.addEventListener('mousedown', function (e) {
     e.preventDefault();
     var startCoords = {
@@ -16,51 +53,23 @@
     var onMouseMove = function (moveEvent) {
       moveEvent.preventDefault();
 
-      var MAX_LEFT = 1135; // 1200 - 65, где 1200 ширина карты, а 65 ширина метки
-      var MIN_LEFT = 0;
-      var MIN_TOP = 43;
-      var MAX_TOP = 553;
-
       if (util.firstTouchFlag) {
         util.activatePage();
-        util.setAddress(false);
         backend.load(util.loadCardsAndPins, util.createErrorAlert);
         util.firstTouchFlag = false;
       }
-      util.setAddress(false);
+      util.setAddress();
 
-      var shift = {
-        x: startCoords.x - moveEvent.clientX,
-        y: startCoords.y - moveEvent.clientY
-      };
+      var shift = calculateShift(startCoords, moveEvent);
 
-      startCoords = {
-        x: moveEvent.clientX,
-        y: moveEvent.clientY
-      };
-
-      if ((mainPin.offsetTop - shift.y) < MIN_TOP) {
-        mainPin.style.top = MIN_TOP + 'px';
-      } else if ((mainPin.offsetTop - shift.y) > MAX_TOP) {
-        mainPin.style.top = MAX_TOP + 'px';
-      } else {
-        mainPin.style.top = (mainPin.offsetTop - shift.y) + 'px';
-      }
-
-      if ((mainPin.offsetLeft - shift.x) < MIN_LEFT) {
-        mainPin.style.left = MIN_LEFT + 'px';
-      } else if ((mainPin.offsetLeft - shift.x) > MAX_LEFT) {
-        mainPin.style.left = MAX_LEFT + 'px';
-      } else {
-        mainPin.style.left = Math.floor((mainPin.offsetLeft - shift.x)) + 'px';
-      }
-
+      startCoords = updateStartCoords(moveEvent);
+      setMainPinPosition(shift);
     };
 
     var onMouseUp = function (upEvent) {
       upEvent.preventDefault();
 
-      util.setAddress(false);
+      util.setAddress();
 
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
@@ -70,16 +79,11 @@
   });
 
   mapOfPins.addEventListener('click', function (e) {
-    var map = document.querySelector('.map');
-    var mapFilterContainer = document.querySelector('.map__filters-container');
     var target = e.target.closest('.map__pin');
 
     if (target && target !== mainPin) {
       util.closeCard();
-
-      var pinClassName = +target.className.split('--')[1];
-      util.renderBefore(map, mapFilterContainer, window.map.cards.children[pinClassName]);
-      target.classList.add('map__pin--active');
+      util.openCard(target);
 
       document.addEventListener('keyup', util.onCardEscPress);
 
@@ -90,9 +94,9 @@
     }
   });
 
-  util.setAddress(true);
+  util.setAddress();
 
   window.map = {
-    cards: '',
+    cards: ''
   };
 })();

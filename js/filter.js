@@ -11,99 +11,105 @@
   var houseGuestsSelect = document.querySelector('#housing-guests');
   var housingFeatures = document.querySelector('#housing-features');
 
-  var filters = {
-    type: {
-      filterName: 'type',
-      filterFunction: filterHouseType,
-      filterData: houseTypeSelect.options[houseTypeSelect.selectedIndex].value,
-      active: false
-    },
-    price: {
-      filterName: 'price',
-      filterFunction: filterHousePrice,
-      filterData: housePriceSelect.options[housePriceSelect.selectedIndex].value,
-      active: false
-    },
-    rooms: {
-      filterName: 'rooms',
-      filterFunction: filterHouseRooms,
-      filterData: houseRoomsSelect.options[houseRoomsSelect.selectedIndex].value,
-      active: false
-    },
-    guests: {
-      filterName: 'guests',
-      filterFunction: filterHouseGuests,
-      filterData: houseGuestsSelect.options[houseGuestsSelect.selectedIndex].value,
-      active: false
-    },
-    features: {
-      filterName: 'features',
-      filterFunction: filterHouseFeatures,
-      filterData: getCheckedCheckboxes(housingFeatures),
-      active: false
-    },
-  };
-
   var priceList = {
     low: 10000,
     middle: [10000, 50000],
     high: 50000
   };
 
-  function getCheckedCheckboxes(checkboxesContainer) {
-    var selectedCheckboxes = checkboxesContainer.querySelectorAll('input.map__checkbox:checked');
-    var checkedValues = [].map.call(selectedCheckboxes, function (el) {
+  var getCheckedCheckboxes = function (checkboxesContainer) {
+    var selectedCheckboxes = checkboxesContainer.querySelectorAll(
+        'input.map__checkbox:checked'
+    );
+    return [].map.call(selectedCheckboxes, function (el) {
       return el.value;
     });
+  };
 
-    return checkedValues;
-  }
-
-  function filterHouseType(value, elementType) {
+  var filterHouseType = function (value, elementType) {
     return value === 'any' ? true : value === elementType;
-  }
+  };
 
-  function filterHousePrice(value, elementPrice) {
+  var filterHousePrice = function (value, elementPrice) {
     if (value === 'any') {
       return true;
     } else if (value === 'low') {
       return elementPrice < priceList[value];
     } else if (value === 'middle') {
-      return ((elementPrice >= priceList[value][0]) && (elementPrice <= priceList[value][1]));
-    } else {
-      return elementPrice > priceList[value];
+      return (
+        elementPrice >= priceList[value][0] &&
+        elementPrice <= priceList[value][1]
+      );
     }
-  }
+    return elementPrice > priceList[value];
+  };
 
-  function filterHouseRooms(value, elementRooms) {
+  var filterHouseRooms = function (value, elementRooms) {
     return value === 'any' ? true : +value === elementRooms;
-  }
+  };
 
-  function filterHouseGuests(value, elementGuests) {
+  var filterHouseGuests = function (value, elementGuests) {
     return value === 'any' ? true : +value === elementGuests;
-  }
+  };
 
-  function filterHouseFeatures(values, elementFeatures) {
+  var filterHouseFeatures = function (values, elementFeatures) {
     if (values.length) {
-      for (var i = 0; i < values.length; i++) {
-        if (~elementFeatures.indexOf(values[i])) {
-          return true;
-        }
-      }
-      return false;
+      return values.some(function (el) {
+        return elementFeatures.indexOf(el) !== -1 ? true : false;
+      });
     }
     return true;
-  }
+  };
 
-  var filterForm = function () {
-    var filteredData = backend.response.slice();
-    var activeFiltersName = Object.keys(filters).filter(function (key) { // Узнаем, какие фильтры активны
+  var filters = {
+    type: {
+      name: 'type',
+      functionName: filterHouseType,
+      data: houseTypeSelect.options[houseTypeSelect.selectedIndex].value,
+      active: false
+    },
+    price: {
+      name: 'price',
+      functionName: filterHousePrice,
+      data: housePriceSelect.options[housePriceSelect.selectedIndex].value,
+      active: false
+    },
+    rooms: {
+      name: 'rooms',
+      functionName: filterHouseRooms,
+      data: houseRoomsSelect.options[houseRoomsSelect.selectedIndex].value,
+      active: false
+    },
+    guests: {
+      name: 'guests',
+      functionName: filterHouseGuests,
+      data: houseGuestsSelect.options[houseGuestsSelect.selectedIndex].value,
+      active: false
+    },
+    features: {
+      name: 'features',
+      functionName: filterHouseFeatures,
+      data: getCheckedCheckboxes(housingFeatures),
+      active: false
+    }
+  };
+
+  var getActiveFilters = function () {
+    return Object.keys(filters).filter(function (key) {
       return filters[key].active ? true : false;
     });
+  };
 
-    activeFiltersName.forEach(function (filterName) { // Фильтруем только через те, которые включены
+  var filterDataThroughActiveFilters = function () {
+    var filteredData = backend.response.slice();
+    var activeFiltersName = getActiveFilters();
+
+    activeFiltersName.forEach(function (filterName) {
       filteredData = filteredData.filter(function (el) {
-        return filters[filterName].filterFunction(filters[filterName].filterData, el.offer[filterName]);
+        return filters[filterName].functionName(
+            filters[filterName].data,
+            el.offer[filterName]
+        );
       });
     });
 
@@ -111,7 +117,7 @@
   };
 
   var updateFilterData = function (filterName, newData) {
-    filters[filterName].filterData = newData;
+    filters[filterName].data = newData;
     if (filterName === 'features') {
       filters[filterName].active = newData.length ? true : false;
     } else {
@@ -119,19 +125,24 @@
     }
   };
 
-  mapFilters.addEventListener('change', debounce(function (e) {
-    var selectedFilterName = e.target.type === 'checkbox' ?
-      e.target.parentElement.id.split('-')[1] :
-      e.target.id.split('-')[1];
+  mapFilters.addEventListener(
+      'change',
+      debounce(function (e) {
+        var selectedFilterName =
+        e.target.type === 'checkbox'
+          ? e.target.parentElement.id.split('-')[1]
+          : e.target.id.split('-')[1];
 
-    var newFilterData = selectedFilterName === 'features' ?
-      getCheckedCheckboxes(housingFeatures) :
-      e.target.options[e.target.selectedIndex].value;
+        var newFilterData =
+        selectedFilterName === 'features'
+          ? getCheckedCheckboxes(housingFeatures)
+          : e.target.options[e.target.selectedIndex].value;
 
-    updateFilterData(selectedFilterName, newFilterData);
+        updateFilterData(selectedFilterName, newFilterData);
 
-    util.clearMapOfPins();
-    util.closeCard();
-    util.loadCardsAndPins(filterForm());
-  }));
+        util.clearMapOfPins();
+        util.closeCard();
+        util.loadCardsAndPins(filterDataThroughActiveFilters());
+      })
+  );
 })();

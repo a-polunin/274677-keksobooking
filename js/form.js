@@ -8,7 +8,6 @@
   var adForm = document.querySelector('.ad-form');
   var adFormReset = document.querySelector('.ad-form__reset');
 
-
   houseType.addEventListener('change', function () {
     var selectedHouseType = houseType.options[houseType.selectedIndex].value;
     var housePrice = document.querySelector('#price');
@@ -41,7 +40,8 @@
   });
 
   var enableCapacityOptions = function () {
-    var selectedRoomNumber = +roomNumber.options[roomNumber.selectedIndex].value;
+    var selectedRoomNumber = +roomNumber.options[roomNumber.selectedIndex]
+      .value;
     var capacity = document.querySelector('#capacity');
     for (var i = 0; i < capacity.options.length; i++) {
       capacity.options[i].disabled = true;
@@ -62,7 +62,11 @@
 
   adForm.addEventListener('submit', function (e) {
     e.preventDefault();
-    window.backend.save(new FormData(adForm), util.deactivatePage, util.createErrorAlert);
+    window.backend.save(
+        new FormData(adForm),
+        util.publishAdvert,
+        util.createErrorAlert
+    );
   });
 
   adFormReset.addEventListener('click', util.deactivatePage);

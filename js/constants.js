@@ -1,6 +1,5 @@
 'use strict';
 (function () {
-
   var PULL_OF_TITLES = [
     'Большая уютная квартира',
     'Маленькая неуютная квартира',
@@ -12,24 +11,11 @@
     'Неуютное бунгало по колено в воде'
   ];
 
-  var PULL_OF_TYPES = [
-    'palace',
-    'flat',
-    'house',
-    'bungalo'
-  ];
+  var PULL_OF_TYPES = ['palace', 'flat', 'house', 'bungalo'];
 
-  var PULL_OF_CHECKINS = [
-    '12:00',
-    '13:00',
-    '14:00'
-  ];
+  var PULL_OF_CHECKINS = ['12:00', '13:00', '14:00'];
 
-  var PULL_OF_CHECKOUTS = [
-    '12:00',
-    '13:00',
-    '14:00'
-  ];
+  var PULL_OF_CHECKOUTS = ['12:00', '13:00', '14:00'];
 
   var PULL_OF_FEATURES = [
     'wifi',
@@ -48,11 +34,12 @@
 
   var NUMBER_OF_OBJECTS = 8;
   var ESC_KEYCODE = 27;
-  var MAIN_PIN_WIDTH = 65;
-  var MAIN_PIN_HEIGHT = 87; // 65 + 22, где 65 высота метки, а 22 это высота острия
-
-  var DEFAULT_MAIN_PIN_LEFT = 570;
-  var DEFAULT_MAIN_PIN_TOP = 375;
+  var MAIN_PIN = {
+    WIDTH: 65,
+    HEIGHT: 87,
+    DEFAULT_LEFT: 570,
+    DEFAULT_TOP: 375
+  };
 
   var PINS_COUNT = 5;
 
@@ -65,10 +52,7 @@
     PULL_OF_PHOTOS: PULL_OF_PHOTOS,
     NUMBER_OF_OBJECTS: NUMBER_OF_OBJECTS,
     ESC_KEYCODE: ESC_KEYCODE,
-    MAIN_PIN_WIDTH: MAIN_PIN_WIDTH,
-    MAIN_PIN_HEIGHT: MAIN_PIN_HEIGHT,
-    DEFAULT_MAIN_PIN_LEFT: DEFAULT_MAIN_PIN_LEFT,
-    DEFAULT_MAIN_PIN_TOP: DEFAULT_MAIN_PIN_TOP,
-    PINS_COUNT: PINS_COUNT,
+    MAIN_PIN: MAIN_PIN,
+    PINS_COUNT: PINS_COUNT
   };
 })();
