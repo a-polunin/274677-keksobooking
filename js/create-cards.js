@@ -1,7 +1,8 @@
 'use strict';
 (function () {
   var util = window.util;
-
+  var map = window.map;
+  var constants = window.constants;
   var fillCardWithData = function (card, data) {
     var cardTitle = card.querySelector('.popup__title');
     var cardAddress = card.querySelector('.popup__text--address');
@@ -15,12 +16,21 @@
     var cardPhotosItem = cardPhotos.querySelector('.popup__photo');
     var cardAvatar = card.querySelector('.popup__avatar');
 
-    cardTitle.textContent = util.getTextContent(data.offer.title) || util.hideElement(cardTitle);
-    cardAddress.textContent = util.getTextContent(data.offer.address) || util.hideElement(cardAddress);
-    cardPrice.textContent = getCardPrice(data.offer.price) || util.hideElement(cardPrice);
-    cardType.textContent = util.getTextContent(getCardType(data.offer.type)) || util.hideElement(cardType);
-    cardCapacity.textContent = getCardCapacity(data.offer.rooms, data.offer.guests) || util.hideElement(cardCapacity);
-    cardTime.textContent = getCardTime(data.offer.checkin, data.offer.checkout) || util.hideElement(cardTime);
+    cardTitle.textContent =
+      util.getTextContent(data.offer.title) || util.hideElement(cardTitle);
+    cardAddress.textContent =
+      util.getTextContent(data.offer.address) || util.hideElement(cardAddress);
+    cardPrice.textContent =
+      getCardPrice(data.offer.price) || util.hideElement(cardPrice);
+    cardType.textContent =
+      util.getTextContent(getCardType(data.offer.type)) ||
+      util.hideElement(cardType);
+    cardCapacity.textContent =
+      getCardCapacity(data.offer.rooms, data.offer.guests) ||
+      util.hideElement(cardCapacity);
+    cardTime.textContent =
+      getCardTime(data.offer.checkin, data.offer.checkout) ||
+      util.hideElement(cardTime);
 
     if (data.offer.features.length) {
       fillCardFeaturesWithData(cardFeatures, data);
@@ -28,7 +38,9 @@
       util.hideElement(cardFeatures);
     }
 
-    cardDescription.textContent = util.getTextContent(data.offer.description) || util.hideElement(cardDescription);
+    cardDescription.textContent =
+      util.getTextContent(data.offer.description) ||
+      util.hideElement(cardDescription);
 
     cardPhotos.innerHTML = '';
     if (data.offer.photos.length) {
@@ -42,13 +54,14 @@
     return card;
   };
 
-
   var fillCardFeaturesWithData = function (cardFeatures, data) {
     cardFeatures.innerHTML = '';
     for (var i = 0; i < data.offer.features.length; i++) {
       var cardFeaturesItem = document.createElement('li');
       cardFeaturesItem.classList.add('popup__feature');
-      cardFeaturesItem.classList.add('popup__feature--' + data.offer.features[i]);
+      cardFeaturesItem.classList.add(
+          'popup__feature--' + data.offer.features[i]
+      );
       cardFeatures.appendChild(cardFeaturesItem);
     }
   };
@@ -62,7 +75,9 @@
   };
 
   var getCardPrice = function (data) {
-    return util.getTextContent(data) ? util.getTextContent(data) + '₽/ночь' : '';
+    return util.getTextContent(data)
+      ? util.getTextContent(data) + '₽/ночь'
+      : '';
   };
 
   var getCardCapacity = function (rooms, guests) {
@@ -70,26 +85,19 @@
   };
 
   var getCardTime = function (checkin, checkout) {
-    return checkin && checkout ? 'Заезд после ' + checkin + ', выезд до ' + checkout : '';
+    return checkin && checkout
+      ? 'Заезд после ' + checkin + ', выезд до ' + checkout
+      : '';
   };
 
   var getCardType = function (type) {
-    switch (type) {
-      case 'flat':
-        return 'Квартира';
-      case 'bungalo':
-        return 'Бунгало';
-      case 'house':
-        return 'Дом';
-      case 'palace':
-        return 'Дворец';
-      default:
-        return '';
-    }
+    return constants.AccomodationType[type.toUpperCase()] || '';
   };
 
   window.createCards = function (data) {
-    var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
-    window.map.cards = util.fillTemplateWithData(cardTemplate, data, fillCardWithData);
+    var cardTemplate = document
+      .querySelector('#card')
+      .content.querySelector('.map__card');
+    map.cards = util.fillTemplateWithData(cardTemplate, data, fillCardWithData);
   };
 })();

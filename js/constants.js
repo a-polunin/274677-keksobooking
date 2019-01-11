@@ -1,58 +1,52 @@
 'use strict';
 (function () {
-  var PULL_OF_TITLES = [
-    'Большая уютная квартира',
-    'Маленькая неуютная квартира',
-    'Огромный прекрасный дворец',
-    'Маленький ужасный дворец',
-    'Красивый гостевой домик',
-    'Некрасивый негостеприимный домик',
-    'Уютное бунгало далеко от моря',
-    'Неуютное бунгало по колено в воде'
-  ];
-
-  var PULL_OF_TYPES = ['palace', 'flat', 'house', 'bungalo'];
-
-  var PULL_OF_CHECKINS = ['12:00', '13:00', '14:00'];
-
-  var PULL_OF_CHECKOUTS = ['12:00', '13:00', '14:00'];
-
-  var PULL_OF_FEATURES = [
-    'wifi',
-    'dishwasher',
-    'parking',
-    'washer',
-    'elevator',
-    'conditioner'
-  ];
-
-  var PULL_OF_PHOTOS = [
-    'http://o0.github.io/assets/images/tokyo/hotel1.jpg',
-    'http://o0.github.io/assets/images/tokyo/hotel2.jpg',
-    'http://o0.github.io/assets/images/tokyo/hotel3.jpg'
-  ];
-
   var NUMBER_OF_OBJECTS = 8;
   var ESC_KEYCODE = 27;
+  var PINS_COUNT = 5;
+
   var MAIN_PIN = {
     WIDTH: 65,
     HEIGHT: 87,
     DEFAULT_LEFT: 570,
-    DEFAULT_TOP: 375
+    DEFAULT_TOP: 375,
+    MAX_LEFT: 1135,
+    MIN_LEFT: 0,
+    MIN_TOP: 43,
+    MAX_TOP: 543
   };
 
-  var PINS_COUNT = 5;
+  var BACKEND = {
+    STATUS_200: 200,
+    TIMEOUT: 10000
+  };
+
+  var HOUSE_PREVIEW = {
+    WIDTH: 70,
+    HEIGHT: 70
+  };
+
+  var AccomodationPrice = {
+    BUNGALO: 0,
+    FLAT: 1000,
+    HOUSE: 5000,
+    PALACE: 10000
+  };
+
+  var AccomodationType = {
+    BUNGALO: 'Бунгало',
+    HOUSE: 'Дом',
+    FLAT: 'Квартира',
+    PALACE: 'Дворец'
+  };
 
   window.constants = {
-    PULL_OF_TITLES: PULL_OF_TITLES,
-    PULL_OF_TYPES: PULL_OF_TYPES,
-    PULL_OF_CHECKINS: PULL_OF_CHECKINS,
-    PULL_OF_CHECKOUTS: PULL_OF_CHECKOUTS,
-    PULL_OF_FEATURES: PULL_OF_FEATURES,
-    PULL_OF_PHOTOS: PULL_OF_PHOTOS,
     NUMBER_OF_OBJECTS: NUMBER_OF_OBJECTS,
     ESC_KEYCODE: ESC_KEYCODE,
     MAIN_PIN: MAIN_PIN,
-    PINS_COUNT: PINS_COUNT
+    BACKEND: BACKEND,
+    HOUSE_PREVIEW: HOUSE_PREVIEW,
+    PINS_COUNT: PINS_COUNT,
+    AccomodationType: AccomodationType,
+    AccomodationPrice: AccomodationPrice
   };
 })();

@@ -1,9 +1,10 @@
 'use strict';
 (function () {
   var util = window.util;
+  var constants = window.constants;
   var houseType = document.querySelector('#type');
-  var timeIn = document.querySelector('#timein');
-  var timeOut = document.querySelector('#timeout');
+  var timeInSelect = document.querySelector('#timein');
+  var timeOutSelect = document.querySelector('#timeout');
   var roomNumber = document.querySelector('#room_number');
   var adForm = document.querySelector('.ad-form');
   var adFormReset = document.querySelector('.ad-form__reset');
@@ -17,26 +18,15 @@
   });
 
   var getSelectedHousePrice = function (type) {
-    switch (type) {
-      case 'bungalo':
-        return 0;
-      case 'flat':
-        return 1000;
-      case 'house':
-        return 5000;
-      case 'palace':
-        return 10000;
-      default:
-        return 0;
-    }
+    return constants.AccomodationPrice[type.toUpperCase()] || 0;
   };
 
-  timeIn.addEventListener('change', function () {
-    timeOut.selectedIndex = timeIn.selectedIndex;
+  timeInSelect.addEventListener('change', function () {
+    timeOutSelect.selectedIndex = timeInSelect.selectedIndex;
   });
 
-  timeOut.addEventListener('change', function () {
-    timeIn.selectedIndex = timeOut.selectedIndex;
+  timeOutSelect.addEventListener('change', function () {
+    timeInSelect.selectedIndex = timeOutSelect.selectedIndex;
   });
 
   var enableCapacityOptions = function () {
