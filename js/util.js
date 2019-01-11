@@ -1,55 +1,9 @@
 'use strict';
 (function () {
   var constants = window.constants;
-
+  var backend = window.backend;
   window.util = {
     firstTouchFlag: true,
-    createArrayOfNumbers: function (num) {
-      var array = [];
-      for (var i = 0; i <= num; i++) {
-        array.push(i);
-      }
-      return array;
-    },
-
-    getRandomElementFromArray: function (array) {
-      return array[this.getRandomInteger(0, array.length - 1)];
-    },
-
-    getRandomInteger: function (min, max) {
-      var rand = min + Math.random() * (max + 1 - min);
-      return Math.floor(rand);
-    },
-
-    cutArray: function (array) {
-      var newArray = array.slice();
-      newArray.sort(this.compareRandom);
-      newArray.length = window.util.getRandomInteger(0, newArray.length);
-      return newArray;
-    },
-
-    compareRandom: function () {
-      return Math.random() - 0.5;
-    },
-
-    mixArrayElements: function (array) {
-      return array.sort(this.compareRandom);
-    },
-
-    getBlockWidth: function (block) {
-      return +getComputedStyle(block).width.slice(
-          0,
-          getComputedStyle(block).width.length - 2
-      );
-    },
-
-    getBlocHeight: function (block) {
-      return +getComputedStyle(block).height.slice(
-          0,
-          getComputedStyle(block).height.length - 2
-      );
-    },
-
     getTopPosition: function (block) {
       return +getComputedStyle(block).top.slice(
           0,
@@ -159,11 +113,15 @@
     },
 
     loadCardsAndPins: function (data) {
+      if (window.util.firstTouchFlag) {
+        backend.response = data;
+        window.util.firstTouchFlag = false;
+      }
       window.createCards(data);
       window.createPins(data);
     },
 
-    clearMapOfPins: function () {
+    deletePins: function () {
       var mapPins = document.querySelectorAll('.map__pins .map__pin');
       mapPins.forEach(function (el) {
         if (el.classList.contains('map__pin--main')) {
@@ -194,27 +152,43 @@
       });
     },
 
-    deactivatePage: function () {
-      document.querySelector('.map').classList.add('map--faded');
+    deleteHousePreviews: function () {
+      var photosContainer = document.querySelector('.ad-form__photo-container');
+      var renderedPhotos = document.querySelectorAll('.ad-form__photo');
+      if (renderedPhotos) {
+        for (var i = 0; i < renderedPhotos.length; i++) {
+          photosContainer.removeChild(renderedPhotos[i]);
+        }
+      }
+    },
 
+    deleteAvatarPreview: function () {
+      document.querySelector('.ad-form-header__preview img').src =
+        'img/muffin-grey.svg';
+    },
+
+    resetForms: function () {
       var adForm = document.querySelector('.ad-form');
       var adFormFieldsets = adForm.querySelectorAll('fieldset');
-      var mapFiltersDisabledItems = document.querySelectorAll(
-          '.map__filters *:disabled'
-      );
-
+      var housePrice = document.querySelector('#price');
       adFormFieldsets.forEach(function (item) {
         item.disabled = true;
       });
       adForm.classList.add('ad-form--disabled');
 
-      mapFiltersDisabledItems.forEach(function (item) {
-        item.disabled = true;
-      });
+      housePrice.placeholder = constants.AccomodationPrice.FLAT;
+      adForm.reset();
+      document.querySelector('.map__filters').reset();
+      window.util.deleteHousePreviews();
+      window.util.deleteAvatarPreview();
+    },
+
+    deactivatePage: function () {
+      document.querySelector('.map').classList.add('map--faded');
 
       window.util.firstTouchFlag = true;
-      adForm.reset();
-      window.util.clearMapOfPins();
+      window.util.resetForms();
+      window.util.deletePins();
       window.util.setAddress();
       window.util.closeCard();
     },
@@ -233,7 +207,7 @@
       var left = Math.floor(mainPinLeft + constants.MAIN_PIN.WIDTH / 2);
       var top = Math.floor(mainPinTop + constants.MAIN_PIN.HEIGHT);
 
-      adressInput.value = left + ', ' + top;
+      adressInput.setAttribute('value', left + ', ' + top); // Firefox показывает пустой инпут, если задавать value через input.value. Через setAttribute все работает.
     },
 
     closeCard: function () {

@@ -2,12 +2,10 @@
 (function () {
   var util = window.util;
   var fillPinWithData = function (pin, data) {
-    var pinWidth = util.getBlockWidth(pin);
-    var pinHeight = util.getBlocHeight(pin);
     var pinImage = pin.querySelector('img');
 
-    pin.style.left = data.location.x + pinWidth / 2 + 'px';
-    pin.style.top = data.location.y + pinHeight + 'px';
+    pin.style.left = data.location.x + 'px';
+    pin.style.top = data.location.y + 'px';
     pinImage.src = data.author.avatar;
     pinImage.alt = data.offer.title;
 

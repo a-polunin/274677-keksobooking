@@ -2,28 +2,24 @@
 (function () {
   var util = window.util;
   var backend = window.backend;
-
+  var constants = window.constants;
+  var filter = window.filter;
   var mainPin = document.querySelector('.map__pin--main');
-  var mapOfPins = document.querySelector('.map__pins');
+  var pinsContainer = document.querySelector('.map__pins');
 
   var setMainPinPosition = function (shift) {
-    var MAX_LEFT = 1135;
-    var MIN_LEFT = 0;
-    var MIN_TOP = 43;
-    var MAX_TOP = 543;
-
-    if (mainPin.offsetTop - shift.y < MIN_TOP) {
-      mainPin.style.top = MIN_TOP + 'px';
-    } else if (mainPin.offsetTop - shift.y > MAX_TOP) {
-      mainPin.style.top = MAX_TOP + 'px';
+    if (mainPin.offsetTop - shift.y < constants.MAIN_PIN.MIN_TOP) {
+      mainPin.style.top = constants.MAIN_PIN.MIN_TOP + 'px';
+    } else if (mainPin.offsetTop - shift.y > constants.MAIN_PIN.MAX_TOP) {
+      mainPin.style.top = constants.MAIN_PIN.MAX_TOP + 'px';
     } else {
       mainPin.style.top = mainPin.offsetTop - shift.y + 'px';
     }
 
-    if (mainPin.offsetLeft - shift.x < MIN_LEFT) {
-      mainPin.style.left = MIN_LEFT + 'px';
-    } else if (mainPin.offsetLeft - shift.x > MAX_LEFT) {
-      mainPin.style.left = MAX_LEFT + 'px';
+    if (mainPin.offsetLeft - shift.x < constants.MAIN_PIN.MIN_LEFT) {
+      mainPin.style.left = constants.MAIN_PIN.MIN_LEFT + 'px';
+    } else if (mainPin.offsetLeft - shift.x > constants.MAIN_PIN.MAX_LEFT) {
+      mainPin.style.left = constants.MAIN_PIN.MAX_LEFT + 'px';
     } else {
       mainPin.style.left = Math.floor(mainPin.offsetLeft - shift.x) + 'px';
     }
@@ -56,7 +52,7 @@
       if (util.firstTouchFlag) {
         util.activatePage();
         backend.load(util.loadCardsAndPins, util.createErrorAlert);
-        util.firstTouchFlag = false;
+        filter.resetActiveFilters();
       }
       util.setAddress();
 
@@ -78,7 +74,7 @@
     document.addEventListener('mouseup', onMouseUp);
   });
 
-  mapOfPins.addEventListener('click', function (e) {
+  pinsContainer.addEventListener('click', function (e) {
     var target = e.target.closest('.map__pin');
 
     if (target && target !== mainPin) {
@@ -87,8 +83,8 @@
 
       document.addEventListener('keyup', util.onCardEscPress);
 
-      var closeCardBtn = document.querySelector('.map__card .popup__close');
-      closeCardBtn.addEventListener('click', function () {
+      var closeCardButton = document.querySelector('.map__card .popup__close');
+      closeCardButton.addEventListener('click', function () {
         util.closeCard();
       });
     }
@@ -97,6 +93,6 @@
   util.setAddress();
 
   window.map = {
-    cards: ''
+    cards: {}
   };
 })();
