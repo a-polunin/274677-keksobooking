@@ -1,6 +1,7 @@
 'use strict';
 (function () {
   var util = window.util;
+  var pinsContainer = document.querySelector('.map__pins');
   var fillPinWithData = function (pin, data) {
     var pinImage = pin.querySelector('img');
 
@@ -16,8 +17,7 @@
     var pinTemplate = document
       .querySelector('#pin')
       .content.querySelector('.map__pin');
-    var mapOfPins = document.querySelector('.map__pins');
     var pins = util.fillTemplateWithData(pinTemplate, data, fillPinWithData);
-    mapOfPins.appendChild(pins);
+    pinsContainer.appendChild(pins);
   };
 })();

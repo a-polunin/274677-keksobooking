@@ -17,6 +17,7 @@
   var housePhotosDropZone = document.querySelector(
       '.ad-form__upload .ad-form__drop-zone'
   );
+  var photosContainer = document.querySelector('.ad-form__photo-container');
 
   var loadAvatarImg = function (e) {
     var file = e.dataTransfer
@@ -45,7 +46,6 @@
   };
 
   var createHousePhotoNode = function (imgSrc) {
-    var photosContainer = document.querySelector('.ad-form__photo-container');
     var previewContainer = document.createElement('div');
     var housePreview = document.createElement('img');
     previewContainer.classList.add('ad-form__photo');

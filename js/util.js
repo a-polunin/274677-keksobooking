@@ -2,6 +2,29 @@
 (function () {
   var constants = window.constants;
   var backend = window.backend;
+  var errorTemplate = document
+    .querySelector('#error')
+    .content.querySelector('.error');
+  var successTemplate = document
+    .querySelector('#success')
+    .content.querySelector('.success');
+  var main = document.querySelector('main');
+  var adForm = document.querySelector('.ad-form');
+  var adFormFieldsets = adForm.querySelectorAll('fieldset');
+
+  var photosContainer = document.querySelector('.ad-form__photo-container');
+  var housePrice = document.querySelector('#price');
+  var mainPin = document.querySelector('.map__pin--main');
+  var adressInput = document.querySelector('#address');
+  var mapFilterContainer = document.querySelector('.map__filters-container');
+  var map = document.querySelector('.map');
+  var pinsContainer = document.querySelector('.map__pins');
+  var avatarPreview = document.querySelector('.ad-form-header__preview img');
+  var mapFiltersForm = document.querySelector('.map__filters');
+  var mapFiltersDisabledItems = document.querySelectorAll(
+      '.map__filters *:disabled'
+  );
+
   window.util = {
     firstTouchFlag: true,
     getTopPosition: function (block) {
@@ -71,11 +94,7 @@
     },
 
     createErrorAlert: function () {
-      var errorTemplate = document
-        .querySelector('#error')
-        .content.querySelector('.error');
       var errorMessage = window.util.createNode(errorTemplate);
-      var main = document.querySelector('main');
       main.insertAdjacentElement('afterbegin', errorMessage);
 
       var deleteErrorMessage = function () {
@@ -92,11 +111,7 @@
     },
 
     createSuccessMessage: function () {
-      var successTemplate = document
-        .querySelector('#success')
-        .content.querySelector('.success');
       var successMessage = window.util.createNode(successTemplate);
-      var main = document.querySelector('main');
       main.insertAdjacentElement('afterbegin', successMessage);
 
       var deleteSuccessMessage = function () {
@@ -122,25 +137,19 @@
     },
 
     deletePins: function () {
-      var mapPins = document.querySelectorAll('.map__pins .map__pin');
-      mapPins.forEach(function (el) {
+      var pins = document.querySelectorAll('.map__pins .map__pin');
+      pins.forEach(function (el) {
         if (el.classList.contains('map__pin--main')) {
           el.style.left = constants.MAIN_PIN.DEFAULT_LEFT + 'px';
           el.style.top = constants.MAIN_PIN.DEFAULT_TOP + 'px';
         } else {
-          document.querySelector('.map__pins').removeChild(el);
+          pinsContainer.removeChild(el);
         }
       });
     },
 
     activatePage: function () {
-      document.querySelector('.map').classList.remove('map--faded');
-
-      var adForm = document.querySelector('.ad-form');
-      var adFormFieldsets = adForm.querySelectorAll('fieldset');
-      var mapFiltersDisabledItems = document.querySelectorAll(
-          '.map__filters *:disabled'
-      );
+      map.classList.remove('map--faded');
 
       adFormFieldsets.forEach(function (item) {
         item.disabled = false;
@@ -153,7 +162,6 @@
     },
 
     deleteHousePreviews: function () {
-      var photosContainer = document.querySelector('.ad-form__photo-container');
       var renderedPhotos = document.querySelectorAll('.ad-form__photo');
       if (renderedPhotos) {
         for (var i = 0; i < renderedPhotos.length; i++) {
@@ -163,28 +171,28 @@
     },
 
     deleteAvatarPreview: function () {
-      document.querySelector('.ad-form-header__preview img').src =
-        'img/muffin-grey.svg';
+      avatarPreview.src = 'img/muffin-grey.svg';
     },
 
     resetForms: function () {
-      var adForm = document.querySelector('.ad-form');
-      var adFormFieldsets = adForm.querySelectorAll('fieldset');
-      var housePrice = document.querySelector('#price');
       adFormFieldsets.forEach(function (item) {
+        item.disabled = true;
+      });
+      mapFiltersDisabledItems.forEach(function (item) {
         item.disabled = true;
       });
       adForm.classList.add('ad-form--disabled');
 
       housePrice.placeholder = constants.AccomodationPrice.FLAT;
+      housePrice.min = constants.AccomodationPrice.FLAT;
       adForm.reset();
-      document.querySelector('.map__filters').reset();
+      mapFiltersForm.reset();
       window.util.deleteHousePreviews();
       window.util.deleteAvatarPreview();
     },
 
     deactivatePage: function () {
-      document.querySelector('.map').classList.add('map--faded');
+      map.classList.add('map--faded');
 
       window.util.firstTouchFlag = true;
       window.util.resetForms();
@@ -199,8 +207,6 @@
     },
 
     setAddress: function () {
-      var mainPin = document.querySelector('.map__pin--main');
-      var adressInput = document.querySelector('#address');
       var mainPinLeft = window.util.getLeftPosition(mainPin);
       var mainPinTop = window.util.getTopPosition(mainPin);
 
@@ -211,7 +217,6 @@
     },
 
     closeCard: function () {
-      var map = document.querySelector('.map');
       var openedCard = document.querySelector('.map__card');
       var activePin = document.querySelector('.map__pin--active');
       if (openedCard) {
@@ -224,10 +229,6 @@
     },
 
     openCard: function (target) {
-      var map = document.querySelector('.map');
-      var mapFilterContainer = document.querySelector(
-          '.map__filters-container'
-      );
       var pinClassName = +target.className.split('--')[1];
       window.util.renderBefore(
           map,
